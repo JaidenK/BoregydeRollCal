@@ -2,13 +2,16 @@ import java.text.DecimalFormat;
 
 
 public class SensorData {
-	private double Mx, My, Mz, Mtot, Gx, Gy, Gz, Gtot, inc, htf, azm;
-
+	private double Bx, By, Bz, Btot, Gx, Gy, Gz, Gtot, inc, htf, azm, temp;
+	DecimalFormat B = new DecimalFormat(" 000.00;-000.00");
+	DecimalFormat G = new DecimalFormat(" 0.000;-0.000");
+	DecimalFormat df = new DecimalFormat(" 000.0;-000.0");
+	
 	public SensorData(){
-		Mx = Math.random();
-		My = Math.random();
-		Mz = Math.random();
-		Mtot = Mx + My + Mz;
+		Bx = Math.random();
+		By = Math.random();
+		Bz = Math.random();
+		Btot = Bx + By + Bz;
 		Gx = Math.random();
 		Gy = Math.random();
 		Gz = Math.random();
@@ -16,55 +19,83 @@ public class SensorData {
 		inc = Math.random() * 360 - 180;
 		htf = Math.random() * 360 - 180;
 		azm = Math.random() * 360 - 180;
+		temp = Math.random()*10+15;
+	}
+	
+	public SensorData(double Bx, double By, double Bz, double Btot, double Gx, double Gz, double Gy, double Gtot, double inc, double htf, double azm, double temp){
+		this.Bx = Bx;
+		this.By = By;
+		this.Bz = Bz;
+		this.Btot = Btot;
+		this.Gx = Gx;
+		this.Gy = Gy;
+		this.Gz = Gz;
+		this.Gtot = Gtot;
+		this.inc = inc;
+		this.htf = htf;
+		this.azm = azm;
+		this.temp = temp;
+	}
+	
+	public SensorData clone(){
+		return new SensorData(Bx, By, Bz, Btot, Gx, Gz, Gy, Gtot, inc, htf, azm, temp);
 	}
 	
 	public String toString(){
 		String data = "";
-		DecimalFormat df = new DecimalFormat("000.000");
-		data += df.format(Mx)+" ";
-		data += df.format(My)+" ";
-		data += df.format(Mz)+" ";
-		data += df.format(Mtot)+" ";
-		data += df.format(Gx)+" ";
-		data += df.format(Gy)+" ";
-		data += df.format(Gz)+" ";
-		data += df.format(Gtot)+" ";
+		data += B.format(Bx)+" ";
+		data += B.format(By)+" ";
+		data += B.format(Bz)+" ";
+		data += B.format(Btot)+" ";
+		data += G.format(Gx)+" ";
+		data += G.format(Gy)+" ";
+		data += G.format(Gz)+" ";
+		data += G.format(Gtot)+" ";
 		data += df.format(inc)+" ";
 		data += df.format(htf)+" ";
-		data += df.format(azm);
+		data += df.format(azm)+" ";
+		data += df.format(temp);
 		return data;
 	}
 	
-	public double getMx() {
-		return Mx;
+	public double getTemp() {
+		return temp;
 	}
 
-	public void setMx(double mx) {
-		Mx = mx;
+	public void setTemp(double temp) {
+		this.temp = temp;
 	}
 
-	public double getMy() {
-		return My;
+	public double getBx() {
+		return Bx;
 	}
 
-	public void setMy(double my) {
-		My = my;
+	public void setBx(double mx) {
+		Bx = mx;
 	}
 
-	public double getMz() {
-		return Mz;
+	public double getBy() {
+		return By;
 	}
 
-	public void setMz(double mz) {
-		Mz = mz;
+	public void setBy(double my) {
+		By = my;
 	}
 
-	public double getMtot() {
-		return Mtot;
+	public double getBz() {
+		return Bz;
 	}
 
-	public void setMtot(double mtot) {
-		Mtot = mtot;
+	public void setBz(double mz) {
+		Bz = mz;
+	}
+
+	public double getBtot() {
+		return Btot;
+	}
+
+	public void setBtot(double mtot) {
+		Btot = mtot;
 	}
 
 	public double getGx() {
@@ -102,6 +133,10 @@ public class SensorData {
 	public double getInc() {
 		return inc;
 	}
+	
+	public String getIncString() {
+		return df.format(inc);
+	}
 
 	public void setInc(double inc) {
 		this.inc = inc;
@@ -109,6 +144,10 @@ public class SensorData {
 
 	public double getHtf() {
 		return htf;
+	}
+	
+	public String getHtfString() {
+		return df.format(htf);
 	}
 
 	public void setHtf(double htf) {
@@ -119,6 +158,10 @@ public class SensorData {
 		return azm;
 	}
 
+	public String getAzmString() {
+		return df.format(azm);
+	}
+	
 	public void setAzm(double azm) {
 		this.azm = azm;
 	}
