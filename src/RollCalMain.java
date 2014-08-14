@@ -1,25 +1,35 @@
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.text.DecimalFormat;
+import java.util.Date;
+
+import org.lwjgl.input.Keyboard;
 
 import king.jaiden.util.*;
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.input.Keyboard.*;
 
 public class RollCalMain extends ApplicationWindow {
 	
-	Menu RawSensorDataDisplay;
+	Menu RawSensorDataDisplay, controlMenu;
 	Label[] label;
 	Label RSDLabel,incLabel,htfLabel,azmLabel,
 				  incTargetLabel,htfTargetLabel,azmTargetLabel,
-				  incTolLabel,htfTolLabel,azmTolLabel;
+				  incTolLabel,htfTolLabel,azmTolLabel,
+				  incDeltaLabel,htfDeltaLabel,azmDeltaLabel;
 	SensorData[] RSD;
 	SensorData currentSD;
 	Menu incReading, htfReading, azmReading;
 
+	Image target, delta;
+	
 	DecimalFormat df;
 	
 	double incTol, htfTol, azmTol, incTarget, htfTarget, azmTarget;
 	
+	Date date;
+	
+	PipeView pipeView,pipeView2;
 	
 	public RollCalMain(IntCoord intCoord, int i, String string, boolean b,
 			int twoDimensional) {
@@ -33,17 +43,41 @@ public class RollCalMain extends ApplicationWindow {
 
 	@Override
 	public void init() {
-		df = new DecimalFormat(" 000.0;-000.0");
+		df = new DecimalFormat(" 000.00;-000.00");
+		date = new Date();
+		target = new Image("res/images/target.png");
+		delta = new Image("res/images/delta.png");
+		pipeView = new PipeView(this,false);
+		pipeView2 = new PipeView(this,true);
 		setupTargets();
 		setupTolerance();
 		setupRSDDisplay();
 		setupIncReading();
 		setupHtfReading();
 		setupAzmReading();
+		setupControlMenu();
 		
 		TextUtil.getInstance().setAlignment(TextUtil.CENTER);
 	}
 
+	public void setupControlMenu(){
+		controlMenu = new Menu();
+		controlMenu.setColor(Color.CLEAR);
+		controlMenu.setDimensions(new Coord(windowDimensions.getX(),100));
+		controlMenu.setVisible(true);
+		
+		Label buttons = new Label("F1       F2      F3      F4      F5     F6     F7     F8     F9     F10                ",new Coord(1,1));
+		buttons.setDimensions(new Coord(10,50));
+		buttons.setSize(Size.MATCH_PARENT_WIDTH);
+		
+		Label controls =new Label("Log      Read    Loop    Rate    Auto          Sim    Calibrate     Term               ",new Coord(1,1));
+		controls.setDimensions(new Coord(10,50));
+		controls.setSize(Size.MATCH_PARENT_WIDTH);
+
+		controlMenu.add(buttons);
+		controlMenu.add(controls);
+	}
+	
 	public void setupTolerance(){
 		incTol = 0.2;
 		htfTol = 2.0;
@@ -54,88 +88,161 @@ public class RollCalMain extends ApplicationWindow {
 		incTarget = Math.random()*360-180;
 		htfTarget = Math.random()*360-180;
 		azmTarget = Math.random()*360-180;
+		pipeView2.update(htfTarget, incTarget, azmTarget, 0);
 	}
 	
 	public void setupIncReading(){
 		incReading = new Menu();
-		incReading.setColor(new Color(0.2,0.2,0.2));
-		incReading.setDimensions(new Coord(windowDimensions.getX()/3,200));
+		incReading.setColor(new Color(0.4,0.4,0.4));
+		incReading.setDimensions(new Coord(400,140));
 		incReading.setVisible(true);
 		
-		Label incLabel0 = new Label("inclination",new Coord(1,1));
+		Label incLabel0 = new Label("INC",new Coord(1,2));
 		incLabel0.setDimensions(new Coord(10,30));
 		incLabel0.setSize(Size.MATCH_PARENT_WIDTH);
-
-		incLabel = new Label(" 000.000",new Coord(1,1));
-		incLabel.setDimensions(new Coord(10,70));
-		incLabel.setSize(Size.MATCH_PARENT_WIDTH);
-
-		incTolLabel = new Label("tol.: 0.0",new Coord(1,1));
-		incTolLabel.setDimensions(new Coord(10,20));
-		incTolLabel.setSize(Size.MATCH_PARENT_WIDTH);
+		incLabel0.setPosition(new Coord(-175,50));
 		
-		incTargetLabel = new Label(df.format(incTarget),new Coord(1,1));
+
+		incLabel = new Label(" 000.000",new Coord(1,2));
+		incLabel.setDimensions(new Coord(10,50));
+		incLabel.setSize(Size.MATCH_PARENT_WIDTH);
+		incLabel.setPosition(new Coord(100,40));
+		
+		Label l = new Label("",new Coord(1,1));
+		l.setDimensions(new Coord(30,30));
+		l.setSize(Size.FIXED);
+		l.setImage(target);
+		l.setPosition(new Coord(-180,-10));
+		incReading.add(l);
+		
+		l = new Label("",new Coord(1,1));
+		l.setDimensions(new Coord(30,30));
+		l.setSize(Size.FIXED);
+		l.setImage(delta);
+		l.setPosition(new Coord(180,-10));
+		incReading.add(l);
+
+//		incTolLabel = new Label("tol.: 0.0",new Coord(1,1));
+//		incTolLabel.setDimensions(new Coord(10,20));
+//		incTolLabel.setSize(Size.MATCH_PARENT_WIDTH);
+		
+		incTargetLabel = new Label(df.format(incTarget),new Coord(1,2));
 		incTargetLabel.setDimensions(new Coord(10,40));
 		incTargetLabel.setSize(Size.MATCH_PARENT_WIDTH);
+		incTargetLabel.setPosition(new Coord(-130,-50));
+		
+		incDeltaLabel = new Label(" 000.000",new Coord(1,2));
+		incDeltaLabel.setDimensions(new Coord(10,40));
+		incDeltaLabel.setSize(Size.MATCH_PARENT_WIDTH);
+		incDeltaLabel.setPosition(new Coord(120,-50));
 		
 		incReading.add(incLabel0);
 		incReading.add(incLabel);
 		incReading.add(incTargetLabel);
-		incReading.add(incTolLabel);
+		incReading.add(incDeltaLabel);
+//		incReading.add(incTolLabel);
 	}
 	public void setupHtfReading(){
 		htfReading = new Menu();
-		htfReading.setColor(new Color(0.2,0.2,0.2));
-		htfReading.setDimensions(new Coord(windowDimensions.getX()/3,200));
+		htfReading.setColor(new Color(0.4,0.4,0.4));
+		htfReading.setDimensions(new Coord(400,140));
 		htfReading.setVisible(true);
 		
-		Label htfLabel0 = new Label("tool face",new Coord(1,1));
+		Label htfLabel0 = new Label("HTF",new Coord(1,2));
 		htfLabel0.setDimensions(new Coord(10,30));
 		htfLabel0.setSize(Size.MATCH_PARENT_WIDTH);
-
-		htfLabel = new Label(" 000.000",new Coord(1,1));
-		htfLabel.setDimensions(new Coord(10,70));
-		htfLabel.setSize(Size.MATCH_PARENT_WIDTH);
-
-		htfTolLabel = new Label("tol.: 0.0",new Coord(1,1));
-		htfTolLabel.setDimensions(new Coord(10,20));
-		htfTolLabel.setSize(Size.MATCH_PARENT_WIDTH);
+		htfLabel0.setPosition(new Coord(-175,50));
 		
-		htfTargetLabel = new Label(df.format(htfTarget),new Coord(1,1));
+
+		htfLabel = new Label(" 000.000",new Coord(1,2));
+		htfLabel.setDimensions(new Coord(10,50));
+		htfLabel.setSize(Size.MATCH_PARENT_WIDTH);
+		htfLabel.setPosition(new Coord(100,40));
+		
+		Label l = new Label("",new Coord(1,1));
+		l.setDimensions(new Coord(30,30));
+		l.setSize(Size.FIXED);
+		l.setImage(target);
+		l.setPosition(new Coord(-180,-10));
+		htfReading.add(l);
+		
+		l = new Label("",new Coord(1,1));
+		l.setDimensions(new Coord(30,30));
+		l.setSize(Size.FIXED);
+		l.setImage(delta);
+		l.setPosition(new Coord(180,-10));
+		htfReading.add(l);
+
+//		htfTolLabel = new Label("tol.: 0.0",new Coord(1,1));
+//		htfTolLabel.setDimensions(new Coord(10,20));
+//		htfTolLabel.setSize(Size.MATCH_PARENT_WIDTH);
+		
+		htfTargetLabel = new Label(df.format(htfTarget),new Coord(1,2));
 		htfTargetLabel.setDimensions(new Coord(10,40));
 		htfTargetLabel.setSize(Size.MATCH_PARENT_WIDTH);
+		htfTargetLabel.setPosition(new Coord(-130,-50));
+		
+		htfDeltaLabel = new Label(" 000.000",new Coord(1,2));
+		htfDeltaLabel.setDimensions(new Coord(10,40));
+		htfDeltaLabel.setSize(Size.MATCH_PARENT_WIDTH);
+		htfDeltaLabel.setPosition(new Coord(120,-50));
 		
 		htfReading.add(htfLabel0);
 		htfReading.add(htfLabel);
 		htfReading.add(htfTargetLabel);
-		htfReading.add(htfTolLabel);
+		htfReading.add(htfDeltaLabel);
+//		htfReading.add(htfTolLabel);
 	}
 	public void setupAzmReading(){
 		azmReading = new Menu();
-		azmReading.setColor(new Color(0.2,0.2,0.2));
-		azmReading.setDimensions(new Coord(windowDimensions.getX()/3,200));
+		azmReading.setColor(new Color(0.4,0.4,0.4));
+		azmReading.setDimensions(new Coord(400,140));
 		azmReading.setVisible(true);
 		
-		Label azmLabel0 = new Label("azimuth",new Coord(1,1));
+		Label azmLabel0 = new Label("AZI",new Coord(1,2));
 		azmLabel0.setDimensions(new Coord(10,30));
 		azmLabel0.setSize(Size.MATCH_PARENT_WIDTH);
-
-		azmLabel = new Label(" 000.000",new Coord(1,1));
-		azmLabel.setDimensions(new Coord(10,70));
-		azmLabel.setSize(Size.MATCH_PARENT_WIDTH);
-
-		azmTolLabel = new Label("tol.: 0.0",new Coord(1,1));
-		azmTolLabel.setDimensions(new Coord(10,20));
-		azmTolLabel.setSize(Size.MATCH_PARENT_WIDTH);
+		azmLabel0.setPosition(new Coord(-175,50));
 		
-		azmTargetLabel = new Label(df.format(azmTarget),new Coord(1,1));
+
+		azmLabel = new Label(" 000.000",new Coord(1,2));
+		azmLabel.setDimensions(new Coord(10,50));
+		azmLabel.setSize(Size.MATCH_PARENT_WIDTH);
+		azmLabel.setPosition(new Coord(100,40));
+		
+		Label l = new Label("",new Coord(1,1));
+		l.setDimensions(new Coord(30,30));
+		l.setSize(Size.FIXED);
+		l.setImage(target);
+		l.setPosition(new Coord(-180,-10));
+		azmReading.add(l);
+		
+		l = new Label("",new Coord(1,1));
+		l.setDimensions(new Coord(30,30));
+		l.setSize(Size.FIXED);
+		l.setImage(delta);
+		l.setPosition(new Coord(180,-10));
+		azmReading.add(l);
+
+//		azmTolLabel = new Label("tol.: 0.0",new Coord(1,1));
+//		azmTolLabel.setDimensions(new Coord(10,20));
+//		azmTolLabel.setSize(Size.MATCH_PARENT_WIDTH);
+		
+		azmTargetLabel = new Label(df.format(azmTarget),new Coord(1,2));
 		azmTargetLabel.setDimensions(new Coord(10,40));
 		azmTargetLabel.setSize(Size.MATCH_PARENT_WIDTH);
+		azmTargetLabel.setPosition(new Coord(-130,-50));
+		
+		azmDeltaLabel = new Label(" 000.000",new Coord(1,2));
+		azmDeltaLabel.setDimensions(new Coord(10,40));
+		azmDeltaLabel.setSize(Size.MATCH_PARENT_WIDTH);
+		azmDeltaLabel.setPosition(new Coord(120,-50));
 		
 		azmReading.add(azmLabel0);
 		azmReading.add(azmLabel);
 		azmReading.add(azmTargetLabel);
-		azmReading.add(azmTolLabel);
+		azmReading.add(azmDeltaLabel);
+//		azmReading.add(azmTolLabel);
 	}
 	
 	public void setupRSDDisplay(){
@@ -202,34 +309,16 @@ public class RollCalMain extends ApplicationWindow {
 	
 	public void tick(){
 		super.tick();
+		date = new Date();
 		if(currentTick%30==0){
-			
-			double x = htfTarget;
-			
-			x -= currentSD.getHtf();
-			
-			currentSD.setHtf(x/10+currentSD.getHtf());
-			
-			if(currentSD.getInc()>180){
-				currentSD.setInc(currentSD.getInc()-360);
-			}if(currentSD.getHtf()>180){
-				currentSD.setHtf(currentSD.getHtf()-360);
-			}if(currentSD.getAzm()>180){
-				currentSD.setAzm(currentSD.getAzm()-360);
-			}
-			
-			updateToleranceLabel();
-			updateIncLabel();
-			updateHtfLabel();
-			updateAzmLabel();
-			updateRSD();
+			read();			
 		}
 	}
 	
 	public void updateToleranceLabel(){
-		incTolLabel.setLabel("tol.: "+incTol);
-		htfTolLabel.setLabel("tol.: "+htfTol);
-		azmTolLabel.setLabel("tol.: "+azmTol);
+//		incTolLabel.setLabel("tol.: "+incTol);
+//		htfTolLabel.setLabel("tol.: "+htfTol);
+//		azmTolLabel.setLabel("tol.: "+azmTol);
 	}
 	
 	public void updateIncLabel(){
@@ -239,6 +328,7 @@ public class RollCalMain extends ApplicationWindow {
 			incLabel.setColor(Color.GREEN);
 		}
 		incLabel.setLabel(currentSD.getIncString());
+		incDeltaLabel.setLabel(df.format(currentSD.getInc()-incTarget));
 	}
 	public void updateHtfLabel(){
 		if(currentSD.getHtf()>htfTarget+htfTol||currentSD.getHtf()<htfTarget-htfTol){
@@ -247,6 +337,7 @@ public class RollCalMain extends ApplicationWindow {
 			htfLabel.setColor(Color.GREEN);
 		}
 		htfLabel.setLabel(currentSD.getHtfString());
+		htfDeltaLabel.setLabel(df.format(currentSD.getHtf()-htfTarget));
 	}
 	public void updateAzmLabel(){
 		if(currentSD.getAzm()>azmTarget+azmTol||currentSD.getAzm()<azmTarget-azmTol){
@@ -255,6 +346,55 @@ public class RollCalMain extends ApplicationWindow {
 			azmLabel.setColor(Color.GREEN);
 		}
 		azmLabel.setLabel(currentSD.getAzmString());
+		azmDeltaLabel.setLabel(df.format(currentSD.getAzm()-azmTarget));
+	}
+	
+	public void log(){
+		setupTargets();
+		htfTargetLabel.setLabel(df.format(htfTarget));
+		incTargetLabel.setLabel(df.format(incTarget));
+		azmTargetLabel.setLabel(df.format(azmTarget));
+	}
+	
+	public void read(){
+		double z = azmTarget;
+		z -= currentSD.getAzm();
+		
+		if(!(currentSD.getAzm()>azmTarget+azmTol||currentSD.getAzm()<azmTarget-azmTol)){
+
+			double y = incTarget;
+			y -= currentSD.getInc();
+			
+			if(!(currentSD.getInc()>incTarget+incTol||currentSD.getInc()<incTarget-incTol)){
+
+				double x = htfTarget;
+				x -= currentSD.getHtf();
+				
+				currentSD.setHtf(x/5+currentSD.getHtf());
+				
+			}
+			currentSD.setInc(y/5+currentSD.getInc());				
+		}
+		currentSD.setAzm(z/5+currentSD.getAzm());
+		
+		if(currentSD.getInc()>180){
+			currentSD.setInc(currentSD.getInc()-360);
+		}if(currentSD.getHtf()>180){
+			currentSD.setHtf(currentSD.getHtf()-360);
+		}if(currentSD.getAzm()>180){
+			currentSD.setAzm(currentSD.getAzm()-360);
+		}
+		
+		update();
+	}
+	
+	public void update(){
+		updateToleranceLabel();
+		updateIncLabel();
+		updateHtfLabel();
+		updateAzmLabel();
+		updateRSD();
+		pipeView.update(currentSD.getHtf(), currentSD.getInc(), currentSD.getAzm(), 30);
 	}
 	
 	public void updateRSD(){
@@ -268,14 +408,70 @@ public class RollCalMain extends ApplicationWindow {
 	}
 	
 	public void input(){
-		
+		while(Keyboard.next()){
+			if(Keyboard.getEventKeyState()){
+				if(Keyboard.getEventKey()==KEY_F1){
+					log();
+				}else
+				if(Keyboard.getEventKey()==KEY_F2){
+					read();
+				}
+			}
+		}
 	}
 	
 	public void draw() {
 		super.draw();
-		drawRawSensorData();
+		drawHeader1();
+		drawHeader2();
+		drawHeader3();
+//		drawRawSensorData();
 		drawTargets();
-		drawControls();
+//		drawControls();
+		pipeView.draw();
+		pipeView2.draw();
+	}
+	
+	public void drawHeader1(){	
+	    // display time and date using toString()
+	    String str = String.format("%td-%<tb-%<tY %<tT", date ); 
+		glPushMatrix();
+			glColor3f(1,1,0);
+			glTranslated(0,windowDimensions.getY()/2-15,0); // Top Center
+			DrawUtil.drawRectAboutOrigin(new Coord(windowDimensions.getX(),30));
+			glTranslated(-windowDimensions.getX()/2+10,0,0); // Top Left
+			DrawUtil.setColor(Color.BLACK);
+			TextUtil.getInstance().setTextSize(new Coord(15,25));
+			TextUtil.getInstance().setAlignment(TextUtil.LEFT);
+			TextUtil.getInstance().write("Boregyde RolCal V0.0.1 -- PLACEHOLDER", new Coord());
+			glTranslated(windowDimensions.getX()-20,0,0); // Top Right
+			TextUtil.getInstance().setAlignment(TextUtil.RIGHT);
+			TextUtil.getInstance().write(str, new Coord());
+		glPopMatrix();
+	}
+	
+	public void drawHeader2(){
+		String sensorName = "APS750";
+		glPushMatrix();
+			glColor3f(1,0.8f,0);
+			glTranslated(-windowDimensions.getX()/2+110,windowDimensions.getY()/2-50,0); // Top Left
+			DrawUtil.drawRectAboutOrigin(new Coord(220,30));
+			glTranslated(-100,0,0); // Top Left
+			DrawUtil.setColor(Color.BLACK);
+			TextUtil.getInstance().setAlignment(TextUtil.LEFT);
+			TextUtil.getInstance().write("Sensor: "+sensorName, new Coord());
+		glPopMatrix();
+	}
+	
+	public void drawHeader3(){
+		glPushMatrix();
+			glColor3f(0.4f,1,1);
+			glTranslated(0,windowDimensions.getY()/2-85,0);
+			DrawUtil.drawRectAboutOrigin(new Coord(windowDimensions.getX(),30));
+			DrawUtil.setColor(Color.BLACK);
+			glTranslated(-windowDimensions.getX()/2+10,0,0);
+			TextUtil.getInstance().write("Log:   Mode: Looping  Count:   1 Next:   0:01.0  ISSUE SENSOR COMMAND", new Coord());
+		glPopMatrix();
 	}
 	
 	public void drawRawSensorData(){
@@ -283,18 +479,20 @@ public class RollCalMain extends ApplicationWindow {
 	}
 	
 	public void drawTargets(){
-		double x = windowDimensions.getX()*0.33333;
 		glPushMatrix();
-			glTranslated(-x,400,0);
-			incReading.draw();
-			glTranslated(x,0,0);
+			glTranslated(-360,windowDimensions.getY()/2-175,0);
 			htfReading.draw();
-			glTranslated(x,0,0);
+			glTranslated(410,0,0);
+			incReading.draw();
+			glTranslated(410,0,0);
 			azmReading.draw();
 		glPopMatrix();
 	}
 	
 	public void drawControls(){
-		
+		glPushMatrix();
+			glTranslated(0,-windowDimensions.getY()/2+100,0);
+			controlMenu.draw();
+		glPopMatrix();
 	}
 }

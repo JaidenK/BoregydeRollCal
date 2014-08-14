@@ -5,7 +5,7 @@ public class SensorData {
 	private double Bx, By, Bz, Btot, Gx, Gy, Gz, Gtot, inc, htf, azm, temp;
 	DecimalFormat B = new DecimalFormat(" 000.00;-000.00");
 	DecimalFormat G = new DecimalFormat(" 0.000;-0.000");
-	DecimalFormat df = new DecimalFormat(" 000.0;-000.0");
+	DecimalFormat df = new DecimalFormat(" 000.00;-000.00");
 	
 	public SensorData(){
 		Bx = Math.random();
