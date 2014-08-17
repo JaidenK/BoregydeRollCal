@@ -314,7 +314,7 @@ public class GUIContainer {
 		drawHeader3();
 //		drawRawSensorData();
 		drawTargets();
-//		drawControls();
+		drawControls();
 		pipeView.draw();
 		pipeView2.draw();
 	}

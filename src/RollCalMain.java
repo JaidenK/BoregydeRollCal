@@ -15,6 +15,8 @@ public class RollCalMain extends ApplicationWindow {
 	double incTol, htfTol, azmTol, incTarget, htfTarget, azmTarget;
 	Date date;
 	GUIContainer gui;
+	boolean looping;
+	
 	public RollCalMain(IntCoord intCoord, int i, String string, boolean b,
 			int twoDimensional) {
 		super(intCoord,i,string,b,twoDimensional);
@@ -30,6 +32,7 @@ public class RollCalMain extends ApplicationWindow {
 		gui = new GUIContainer(this);
 		setupTargets();
 		TextUtil.getInstance().setAlignment(TextUtil.CENTER);
+		looping = true;
 	}
 	public void setupTolerance(){
 		incTol = 0.2;
@@ -56,11 +59,14 @@ public class RollCalMain extends ApplicationWindow {
 		RSD[0] = currentSD;	
 	}
 	public void tick(){
-		super.tick();
 		date = new Date();
-		if(currentTick%30==0){
-			read();			
+		if(looping){
+			currentTick++;
+			if(currentTick%30==0){
+				read();			
+			}
 		}
+		
 	}
 	public void log(){
 		setupTargets();
@@ -96,15 +102,28 @@ public class RollCalMain extends ApplicationWindow {
 		
 		gui.update();
 	}
-	
+	public void loop(){
+		if(looping){
+			looping = false;
+			gui.pipeView.setEasing(false);
+		}else{
+			looping = true;
+			gui.pipeView.setEasing(true);
+		}
+	}
 	public void input(){
 		while(Keyboard.next()){
 			if(Keyboard.getEventKeyState()){
-				if(Keyboard.getEventKey()==KEY_F1){
+				switch(Keyboard.getEventKey()){
+				case KEY_F1:
 					log();
-				}else
-				if(Keyboard.getEventKey()==KEY_F2){
+					break;
+				case KEY_F2:
 					read();
+					break;
+				case KEY_F3:
+					loop();
+					break;
 				}
 			}
 		}

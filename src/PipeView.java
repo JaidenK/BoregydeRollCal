@@ -8,6 +8,7 @@ public class PipeView {
 	double currentHtf = 0, currentInc = 0, currentAzm = 0;
 	int ticksTilNext = 0;
 	int currTick = 0;
+	boolean easing = true;
 	
 	public PipeView(RollCalMain m,boolean x){
 		this.m = m;
@@ -48,6 +49,9 @@ public class PipeView {
 	}
 	public double getValue(double t, double b, double c, double d){
 		return c*t/d + b;
+	}
+	public void setEasing(boolean e){
+		easing = e;
 	}
 	public void draw(){
 		
@@ -100,6 +104,7 @@ public class PipeView {
 				glDisable(GL_DEPTH_TEST);
 			m.setup2DMatrix();
 		glPopMatrix();
-		currTick++;
+		if(easing)
+			currTick++;
 	}
 }
