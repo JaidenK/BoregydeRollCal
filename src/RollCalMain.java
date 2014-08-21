@@ -12,7 +12,7 @@ import static org.lwjgl.input.Keyboard.*;
 public class RollCalMain extends ApplicationWindow {
 	SensorData[] RSD;
 	SensorData currentSD;
-	double incTol, htfTol, azmTol, incTarget, htfTarget, azmTarget;
+	double incTol, htfTol, azmTol, incTarget, htfTarget, azmTarget,rate;
 	Date date;
 	GUIContainer gui;
 	boolean looping;
@@ -33,6 +33,7 @@ public class RollCalMain extends ApplicationWindow {
 		setupTargets();
 		TextUtil.getInstance().setAlignment(TextUtil.CENTER);
 		looping = true;
+		rate = 0.5;
 	}
 	public void setupTolerance(){
 		incTol = 0.2;
@@ -62,7 +63,7 @@ public class RollCalMain extends ApplicationWindow {
 		date = new Date();
 		if(looping){
 			currentTick++;
-			if(currentTick%30==0){
+			if(currentTick%(60*rate)==0){
 				read();			
 			}
 		}
@@ -111,6 +112,9 @@ public class RollCalMain extends ApplicationWindow {
 			gui.pipeView.setEasing(true);
 		}
 	}
+	public void changeRate(){
+		rate = MyOptionPane.getInstance().showDoubleInputDialog("Rate: ");
+	}
 	public void input(){
 		while(Keyboard.next()){
 			if(Keyboard.getEventKeyState()){
@@ -123,6 +127,9 @@ public class RollCalMain extends ApplicationWindow {
 					break;
 				case KEY_F3:
 					loop();
+					break;
+				case KEY_F4:
+					changeRate();
 					break;
 				}
 			}
