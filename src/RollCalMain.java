@@ -16,6 +16,7 @@ public class RollCalMain extends ApplicationWindow {
 	Date date;
 	GUIContainer gui;
 	boolean looping;
+	CalSequence calseq;
 	
 	public RollCalMain(IntCoord intCoord, int i, String string, boolean b,
 			int twoDimensional) {
@@ -30,6 +31,7 @@ public class RollCalMain extends ApplicationWindow {
 		setupTolerance();
 		setupRawSensorData();
 		gui = new GUIContainer(this);
+		calseq = new CalSequence();
 		setupTargets();
 		TextUtil.getInstance().setAlignment(TextUtil.CENTER);
 		looping = true;
@@ -41,9 +43,10 @@ public class RollCalMain extends ApplicationWindow {
 		azmTol = 0.5;
 	}
 	public void setupTargets(){
-		incTarget = Math.random()*360-180;
-		htfTarget = Math.random()*360-180;
-		azmTarget = Math.random()*360-180;
+		CalStep cs = calseq.next();
+		incTarget = cs.inc;
+		htfTarget = cs.htf;
+		azmTarget = cs.azi;
 		gui.updateTargets();
 	}
 	public void setupRawSensorData(){
@@ -115,7 +118,18 @@ public class RollCalMain extends ApplicationWindow {
 	public void changeRate(){
 		rate = MyOptionPane.getInstance().showDoubleInputDialog("Rate: ");
 	}
+	public void modelRotate(){
+		if(Keyboard.isKeyDown(KEY_LEFT)){
+			gui.pipeView.yrot += 1;
+			gui.pipeView2.yrot += 1;
+		}
+		if(Keyboard.isKeyDown(KEY_RIGHT)){
+			gui.pipeView.yrot -= 1;
+			gui.pipeView2.yrot -= 1;
+		}
+	}
 	public void input(){
+		modelRotate();
 		while(Keyboard.next()){
 			if(Keyboard.getEventKeyState()){
 				switch(Keyboard.getEventKey()){

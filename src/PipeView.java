@@ -9,7 +9,7 @@ public class PipeView {
 	int ticksTilNext = 0;
 	int currTick = 0;
 	boolean easing = true;
-	
+	double xrot = 10, yrot = 10;
 	public PipeView(RollCalMain m,boolean x){
 		this.m = m;
 		ghost = x;
@@ -54,15 +54,12 @@ public class PipeView {
 		easing = e;
 	}
 	public void draw(){
-		
-		
-		
 		glPushMatrix();
 			m.setup3DMatrix();
 				glEnable(GL_DEPTH_TEST);
 					glTranslated(0,0,-15);
-					glRotated(10,1,0,0);
-					glRotated(-10,0,1,0);
+					glRotated(xrot,1,0,0);
+					glRotated(yrot,0,1,0);
 					glBegin(GL_LINES);
 						DrawUtil.setColor(Color.RED);
 						glVertex3d(-10,0,0);
@@ -75,16 +72,18 @@ public class PipeView {
 						glVertex3d(0,0,10);
 					glEnd();
 					
+					
 					if(!ghost){
 						glRotated(getValue(currTick,previousAzm,currentAzm-previousAzm,ticksTilNext),0,1,0);
+						glRotated(-90,0,0,1);
 						glRotated(getValue(currTick,previousInc,currentInc-previousInc,ticksTilNext),0,0,1);
-						glRotated(getValue(currTick,previousHtf,currentHtf-previousHtf,ticksTilNext),1,0,0);
+						glRotated(-getValue(currTick,previousHtf,currentHtf-previousHtf,ticksTilNext),1,0,0);
 					}else{
 						glRotated(currentAzm,0,1,0);
+						glRotated(-90,0,0,1);
 						glRotated(currentInc,0,0,1);
-						glRotated(currentHtf,1,0,0);
+						glRotated(-currentHtf,1,0,0);
 					}
-					
 					DrawUtil.drawRectPrismAboutOrigin(new Coord3D(15,2,2), pipeColors);
 					glTranslated(7.5,0,0);
 					if(!ghost){

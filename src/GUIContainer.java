@@ -51,7 +51,7 @@ public class GUIContainer {
 	public void setupIncReading(){
 		incReading = new Menu();
 		incReading.setColor(new Color(0.4,0.4,0.4));
-		incReading.setDimensions(new Coord(400,140));
+		incReading.setDimensions(new Coord(400,160));
 		incReading.setVisible(true);
 		
 		Label incLabel0 = new Label("INC",new Coord(1,2));
@@ -61,9 +61,9 @@ public class GUIContainer {
 		
 
 		incLabel = new Label(" 000.000",new Coord(1,2));
-		incLabel.setDimensions(new Coord(10,50));
+		incLabel.setDimensions(new Coord(10,60));
 		incLabel.setSize(Size.MATCH_PARENT_WIDTH);
-		incLabel.setPosition(new Coord(100,40));
+		incLabel.setPosition(new Coord(100,45));
 		
 		Label l = new Label("",new Coord(1,1));
 		l.setDimensions(new Coord(30,30));
@@ -84,14 +84,14 @@ public class GUIContainer {
 //		incTolLabel.setSize(Size.MATCH_PARENT_WIDTH);
 		
 		incTargetLabel = new Label(df.format(main.incTarget),new Coord(1,2));
-		incTargetLabel.setDimensions(new Coord(10,40));
+		incTargetLabel.setDimensions(new Coord(10,50));
 		incTargetLabel.setSize(Size.MATCH_PARENT_WIDTH);
-		incTargetLabel.setPosition(new Coord(-130,-50));
+		incTargetLabel.setPosition(new Coord(-120,-55));
 		
 		incDeltaLabel = new Label(" 000.000",new Coord(1,2));
-		incDeltaLabel.setDimensions(new Coord(10,40));
+		incDeltaLabel.setDimensions(new Coord(10,50));
 		incDeltaLabel.setSize(Size.MATCH_PARENT_WIDTH);
-		incDeltaLabel.setPosition(new Coord(120,-50));
+		incDeltaLabel.setPosition(new Coord(110,-55));
 		
 		incReading.add(incLabel0);
 		incReading.add(incLabel);
@@ -102,7 +102,7 @@ public class GUIContainer {
 	public void setupHtfReading(){
 		htfReading = new Menu();
 		htfReading.setColor(new Color(0.4,0.4,0.4));
-		htfReading.setDimensions(new Coord(400,140));
+		htfReading.setDimensions(new Coord(400,160));
 		htfReading.setVisible(true);
 		
 		Label htfLabel0 = new Label("HTF",new Coord(1,2));
@@ -112,9 +112,9 @@ public class GUIContainer {
 		
 
 		htfLabel = new Label(" 000.000",new Coord(1,2));
-		htfLabel.setDimensions(new Coord(10,50));
+		htfLabel.setDimensions(new Coord(10,60));
 		htfLabel.setSize(Size.MATCH_PARENT_WIDTH);
-		htfLabel.setPosition(new Coord(100,40));
+		htfLabel.setPosition(new Coord(100,45));
 		
 		Label l = new Label("",new Coord(1,1));
 		l.setDimensions(new Coord(30,30));
@@ -135,14 +135,14 @@ public class GUIContainer {
 //		htfTolLabel.setSize(Size.MATCH_PARENT_WIDTH);
 		
 		htfTargetLabel = new Label(df.format(main.htfTarget),new Coord(1,2));
-		htfTargetLabel.setDimensions(new Coord(10,40));
+		htfTargetLabel.setDimensions(new Coord(10,50));
 		htfTargetLabel.setSize(Size.MATCH_PARENT_WIDTH);
-		htfTargetLabel.setPosition(new Coord(-130,-50));
+		htfTargetLabel.setPosition(new Coord(-120,-55));
 		
 		htfDeltaLabel = new Label(" 000.000",new Coord(1,2));
-		htfDeltaLabel.setDimensions(new Coord(10,40));
+		htfDeltaLabel.setDimensions(new Coord(10,50));
 		htfDeltaLabel.setSize(Size.MATCH_PARENT_WIDTH);
-		htfDeltaLabel.setPosition(new Coord(120,-50));
+		htfDeltaLabel.setPosition(new Coord(110,-55));
 		
 		htfReading.add(htfLabel0);
 		htfReading.add(htfLabel);
@@ -153,7 +153,7 @@ public class GUIContainer {
 	public void setupAzmReading(){
 		azmReading = new Menu();
 		azmReading.setColor(new Color(0.4,0.4,0.4));
-		azmReading.setDimensions(new Coord(400,140));
+		azmReading.setDimensions(new Coord(400,160));
 		azmReading.setVisible(true);
 		
 		Label azmLabel0 = new Label("AZI",new Coord(1,2));
@@ -163,9 +163,9 @@ public class GUIContainer {
 		
 
 		azmLabel = new Label(" 000.000",new Coord(1,2));
-		azmLabel.setDimensions(new Coord(10,50));
+		azmLabel.setDimensions(new Coord(10,60));
 		azmLabel.setSize(Size.MATCH_PARENT_WIDTH);
-		azmLabel.setPosition(new Coord(100,40));
+		azmLabel.setPosition(new Coord(100,45));
 		
 		Label l = new Label("",new Coord(1,1));
 		l.setDimensions(new Coord(30,30));
@@ -186,14 +186,14 @@ public class GUIContainer {
 //		azmTolLabel.setSize(Size.MATCH_PARENT_WIDTH);
 		
 		azmTargetLabel = new Label(df.format(main.azmTarget),new Coord(1,2));
-		azmTargetLabel.setDimensions(new Coord(10,40));
+		azmTargetLabel.setDimensions(new Coord(10,50));
 		azmTargetLabel.setSize(Size.MATCH_PARENT_WIDTH);
-		azmTargetLabel.setPosition(new Coord(-130,-50));
+		azmTargetLabel.setPosition(new Coord(-120,-55));
 		
 		azmDeltaLabel = new Label(" 000.000",new Coord(1,2));
-		azmDeltaLabel.setDimensions(new Coord(10,40));
+		azmDeltaLabel.setDimensions(new Coord(10,50));
 		azmDeltaLabel.setSize(Size.MATCH_PARENT_WIDTH);
-		azmDeltaLabel.setPosition(new Coord(120,-50));
+		azmDeltaLabel.setPosition(new Coord(110,-55));
 		
 		azmReading.add(azmLabel0);
 		azmReading.add(azmLabel);
