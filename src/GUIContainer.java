@@ -350,7 +350,7 @@ public class GUIContainer {
 	public void drawHeader3(){
 		glPushMatrix();
 			glColor3f(0.4f,1,1);
-			glTranslated(0,wd.getY()/2-85,0);
+			glTranslated(230,wd.getY()/2-50,0);
 			DrawUtil.drawRectAboutOrigin(new Coord(wd.getX(),30));
 			DrawUtil.setColor(Color.BLACK);
 			glTranslated(-wd.getX()/2+10,0,0);
