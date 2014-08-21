@@ -72,8 +72,19 @@ public class RollCalMain extends ApplicationWindow {
 		}
 		
 	}
+	public boolean allWithinTolerance(){
+		if(!(currentSD.getInc()>incTarget+incTol||currentSD.getInc()<incTarget-incTol)){
+			if(!(currentSD.getHtf()>htfTarget+htfTol||currentSD.getHtf()<htfTarget-htfTol)){
+				if(!(currentSD.getAzm()>azmTarget+azmTol||currentSD.getAzm()<azmTarget-azmTol)){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 	public void log(){
-		setupTargets();
+		if(allWithinTolerance())
+			setupTargets();
 	}
 	public void read(){
 		double z = azmTarget;
